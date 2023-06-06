@@ -1,20 +1,26 @@
 package br.com.sysprise.categoria.service;
 
+import br.com.sysprise.categoria.model.*;
 import br.com.sysprise.categoria.repository.CategoriaRepository;
 import jakarta.persistence.EntityNotFoundException;
-import lombok.AllArgsConstructor;
+import net.devh.boot.grpc.client.inject.GrpcClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import br.com.sysprise.categoria.model.*;
+import pb.CategoriaId;
+import pb.ProdutoServiceGrpc;
 
 import java.util.List;
 
 @Service
-@AllArgsConstructor
 public class CategoriaService {
 
-    private final CategoriaRepository categoriaRepository;
+    @Autowired
+    private CategoriaRepository categoriaRepository;
+
+    @GrpcClient("produto")
+    private ProdutoServiceGrpc.ProdutoServiceBlockingStub produtoStub;
 
     public Categoria findCategoriaById(Long id) {
         return categoriaRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("A categoria requisitada não foi encontrada!"));
@@ -53,9 +59,9 @@ public class CategoriaService {
 
     public void deletar(Long id) {
         Categoria categoria = this.findCategoriaById(id);
-//        Boolean haProdutosVinculados = categoriaRepository.haProdutosVinculadosCategoria(categoria.getId());
-        Boolean haProdutosVinculados = true;
-         if(haProdutosVinculados) throw new RuntimeException("Categoria não pode ser deletada pois há produtos vinculados a ela");
+        boolean haProdutosVinculados = produtoStub.verifyIfExistsProductsAssociatedWithCategory(CategoriaId.newBuilder().setId(id).build()).getExiste();
+        if (haProdutosVinculados)
+            throw new RuntimeException("Categoria não pode ser deletada pois há produtos vinculados a ela");
         categoriaRepository.delete(categoria);
     }
 }

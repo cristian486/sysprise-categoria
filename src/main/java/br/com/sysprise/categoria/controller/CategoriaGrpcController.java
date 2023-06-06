@@ -1,6 +1,7 @@
-package br.com.sysprise.categoria.service;
+package br.com.sysprise.categoria.controller;
 
 
+import br.com.sysprise.categoria.service.CategoriaService;
 import io.grpc.stub.StreamObserver;
 import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import java.util.List;
 
 
 @GrpcService
-public class CategoriaRpcService extends pb.CategoriaServiceGrpc.CategoriaServiceImplBase {
+public class CategoriaGrpcController extends pb.CategoriaServiceGrpc.CategoriaServiceImplBase {
 
     @Autowired
     private CategoriaService categoriaService;
