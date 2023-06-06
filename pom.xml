@@ -84,6 +84,13 @@
 			<scope>provided</scope>
 		</dependency>
 
+		<!--	PARA INICIAR O CLIENT gRPC COM O SPRING	-->
+		<dependency>
+			<groupId>net.devh</groupId>
+			<artifactId>grpc-client-spring-boot-starter</artifactId>
+			<version>2.14.0.RELEASE</version>
+		</dependency>
+
 		<!--	PARA INICIAR O SERVER gRPC COM O SPRING	-->
 		<dependency>
 			<groupId>net.devh</groupId>
